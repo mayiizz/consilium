@@ -1,0 +1,10 @@
+{
+  "typescript.tsdk": "frontend/node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "eslint.workingDirectories": ["frontend"],
+  "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python",
+  "python.analysis.extraPaths": ["${workspaceFolder}/backend"],
+  "basedpyright.analysis.extraPaths": ["${workspaceFolder}/backend"],
+  "basedpyright.venvPath": "${workspaceFolder}/backend",
+  "basedpyright.venv": ".venv"
+}

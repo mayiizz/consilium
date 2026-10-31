@@ -1,0 +1,364 @@
+# Day 2 — Project Progress & Technical Discussion
+
+**Project:** AI-Based 3D Mapping & Visualization System
+**Day:** 2 — Progress Review & Technical Discussion
+**Duration:** Approximately 1 hour
+**Participants:** Rahul, Meera, Arjun, Ananya, Karthik
+
+---
+
+**[10:00 AM — Meeting Started]**
+
+**Rahul:** Good morning everyone. So this is Day 2. Yesterday we divided the work and decided what we wanted to complete first. Let's start with a quick progress update from everyone.
+
+**Arjun:** I can go first. I created the Git repository and set up the backend structure. The basic FastAPI application is running locally.
+
+**Rahul:** Good. Did you create the initial APIs?
+
+**Arjun:** Yes. I created the upload endpoint and a basic health-check endpoint. The upload API currently accepts image files and stores them locally.
+
+**Meera:** Does it return a response after uploading?
+
+**Arjun:** Yes. It returns a file ID and the current processing status.
+
+**Meera:** Perfect. I can use that for the frontend.
+
+**Rahul:** Great. Meera, what did you complete?
+
+**Meera:** I set up the React project and created the basic upload page. Right now, users can select files and see the selected filenames. I haven't connected it to the backend yet.
+
+**Arjun:** I can give you the API details after this meeting.
+
+**Meera:** That would help.
+
+---
+
+**[10:08 AM — Dataset Progress]**
+
+**Rahul:** Karthik, what did you find with the datasets?
+
+**Karthik:** I checked several publicly available datasets. I shortlisted three that seem useful for our initial experiments.
+
+**Ananya:** Did you check their formats?
+
+**Karthik:** Yes. Most of them use standard image formats. But the resolutions are different, so we'll probably need preprocessing.
+
+**Ananya:** That's okay.
+
+**Karthik:** One dataset is quite large though. Downloading the complete dataset isn't practical for our current setup.
+
+**Rahul:** Can we work with a subset?
+
+**Karthik:** Yes. There's enough data to create a smaller sample for experimentation.
+
+**Ananya:** That's probably better for now. We don't need millions of images just to test whether the approach works.
+
+**Rahul:** Agreed. We'll use a smaller subset for the prototype and expand later if necessary.
+
+---
+
+**[10:15 AM — ML Progress]**
+
+**Rahul:** Ananya, how did the ML experiments go?
+
+**Ananya:** I tested the initial approach using a small sample. The basic pipeline works, but the output isn't consistent yet.
+
+**Rahul:** What exactly is the issue?
+
+**Ananya:** The quality depends heavily on the input images. When the images have enough overlap and are reasonably clear, the result is much better. With poor images, the output becomes unreliable.
+
+**Karthik:** So the dataset quality matters quite a lot?
+
+**Ananya:** Yes. More than I initially expected.
+
+**Meera:** Can the application detect bad input before processing?
+
+**Ananya:** We can add some basic checks. For example, image resolution, blur, and whether enough usable information is present.
+
+**Arjun:** I can add validation to the backend once we know exactly what checks you need.
+
+**Ananya:** I'll document the checks.
+
+**Rahul:** Good. Let's not try to solve every possible image-quality issue today. Start with the obvious ones.
+
+---
+
+**[10:23 AM — Architecture Review]**
+
+**Arjun:** There's something I wanted to discuss about the architecture.
+
+**Rahul:** Go ahead.
+
+**Arjun:** Yesterday we said we'd have separate frontend, backend, and ML components. I think we should also make the processing asynchronous.
+
+**Meera:** Why?
+
+**Arjun:** Because the ML processing may take some time. If the frontend waits for the API request to finish, the request could time out.
+
+**Ananya:** That's definitely possible.
+
+**Rahul:** So what's your suggestion?
+
+**Arjun:** The backend receives the upload, creates a job, and immediately returns a job ID. The ML service processes the job separately. The frontend can then check the job status.
+
+**Meera:** That actually fits nicely with the processing screen I was planning.
+
+**Karthik:** So the status could change from uploaded to processing to completed?
+
+**Arjun:** Exactly.
+
+**Rahul:** Good. Let's use that architecture.
+
+**Ananya:** That will also make it easier to scale later.
+
+**Rahul:** Agreed.
+
+---
+
+**[10:30 AM — Frontend Discussion]**
+
+**Meera:** I want to show you guys the current UI flow.
+
+**Rahul:** Sure.
+
+**Meera:** The first screen has a simple upload area. After uploading, the user gets redirected to a processing screen. The processing screen shows the job ID and status.
+
+**Arjun:** That should work.
+
+**Meera:** Once the backend says the processing is complete, the user gets a button to view the result.
+
+**Ananya:** Can we eventually show a preview of the generated output there?
+
+**Meera:** Yes. That's the plan.
+
+**Rahul:** What about multiple images?
+
+**Meera:** The UI currently allows multiple files, but I haven't added drag-and-drop yet.
+
+**Rahul:** Don't worry about drag-and-drop for now.
+
+**Meera:** Okay.
+
+**Rahul:** Focus on making the complete upload-to-result flow work first.
+
+---
+
+**[10:37 AM — Backend Integration]**
+
+**Arjun:** I also tested the upload endpoint with multiple images.
+
+**Karthik:** Did it work?
+
+**Arjun:** Yes, but I found one issue. Large files take quite a while to upload.
+
+**Meera:** How large are we talking?
+
+**Arjun:** The test files were around 100 to 200 MB in total.
+
+**Rahul:** That's expected to some extent.
+
+**Ananya:** Could we compress the images before uploading?
+
+**Arjun:** We could, but I'd rather not reduce the quality too much.
+
+**Karthik:** Maybe we can resize only images that are unnecessarily large.
+
+**Arjun:** That's possible.
+
+**Rahul:** Let's mark image optimization as a later task. For now, we should establish reasonable upload limits.
+
+**Arjun:** I'll add a basic file-size limit.
+
+---
+
+**[10:43 AM — Data Preprocessing]**
+
+**Karthik:** I started working on preprocessing too.
+
+**Rahul:** What did you find?
+
+**Karthik:** The images have different dimensions and some have metadata that isn't consistent. I'm creating a preprocessing script to standardize them.
+
+**Ananya:** Can you make sure we don't accidentally remove information that the ML pipeline needs?
+
+**Karthik:** Yes. I'll keep the original files unchanged and create processed copies.
+
+**Ananya:** Perfect.
+
+**Karthik:** I'm also adding a simple dataset statistics report.
+
+**Rahul:** What will it contain?
+
+**Karthik:** Number of images, image dimensions, file types, missing or corrupted files, and basic quality statistics.
+
+**Rahul:** Good. That will help us justify our dataset choice later.
+
+---
+
+**[10:48 AM — Problems Encountered]**
+
+**Rahul:** Let's talk about problems. What blocked anyone yesterday?
+
+**Meera:** I had a small issue with the frontend package setup, but I fixed it.
+
+**Arjun:** My main issue was handling multiple file uploads correctly.
+
+**Karthik:** My problem was that one dataset had incomplete documentation.
+
+**Ananya:** For me, it was the model output. The basic approach works, but we need better input validation.
+
+**Rahul:** None of these are blockers then?
+
+**Everyone:** No.
+
+**Rahul:** Good.
+
+**Meera:** I do have one question. What happens if the ML processing fails?
+
+**Arjun:** The backend can update the job status to failed.
+
+**Meera:** And then I can show an error message.
+
+**Ananya:** We should also store the reason for failure.
+
+**Arjun:** I'll add an error field to the job response.
+
+**Rahul:** Good. That will make debugging easier.
+
+---
+
+**[10:53 AM — Testing Strategy]**
+
+**Rahul:** We haven't talked much about testing yet.
+
+**Arjun:** I can start with API tests.
+
+**Meera:** I'll test the main UI flow.
+
+**Ananya:** I'll test the ML pipeline with different types of input.
+
+**Karthik:** I'll test the preprocessing script with different image sizes and formats.
+
+**Rahul:** Good. Let's not wait until the end to test everything.
+
+**Arjun:** We can also create a few standard test files that everyone uses.
+
+**Karthik:** That's a good idea.
+
+**Ananya:** Yes. Then we'll know whether a change actually improves or breaks the pipeline.
+
+**Rahul:** Let's create a small test dataset and keep it in the project documentation.
+
+---
+
+**[10:57 AM — Task Reallocation]**
+
+**Rahul:** Based on today's discussion, I think we should slightly change the task allocation.
+
+**Meera:** How?
+
+**Rahul:** Arjun will focus on the asynchronous processing API. Meera will connect the frontend to the upload and status APIs. Ananya will focus on improving the initial ML pipeline and defining input-quality checks. Karthik will finish dataset analysis and preprocessing.
+
+**Arjun:** Sounds good.
+
+**Meera:** Yep.
+
+**Ananya:** Works for me.
+
+**Karthik:** Same.
+
+**Rahul:** I'll work on the architecture documentation and make sure the components are being integrated correctly.
+
+---
+
+**[11:02 AM — Day 2 Milestone]**
+
+**Rahul:** Let's define today's final milestone.
+
+**Arjun:** Backend should accept an upload and return a job ID.
+
+**Meera:** Frontend should be able to send an upload and display the job status.
+
+**Ananya:** ML should be able to process at least one valid input successfully.
+
+**Karthik:** Dataset preprocessing should produce standardized input.
+
+**Rahul:** And all of this should be pushed to Git with documentation.
+
+**Meera:** So ideally, by the end of today, we should have an end-to-end demo?
+
+**Rahul:** Exactly.
+
+**Arjun:** Even if the ML output is still basic?
+
+**Rahul:** Yes. The goal is to prove the complete pipeline works.
+
+**Ananya:** That's a good milestone.
+
+---
+
+**[11:07 AM — Final Questions]**
+
+**Karthik:** One thing. Should we start thinking about cloud deployment now?
+
+**Rahul:** Not yet.
+
+**Arjun:** I agree. Deployment will introduce another set of problems.
+
+**Meera:** We can demonstrate everything locally first.
+
+**Ananya:** And once the pipeline is stable, we can decide what needs cloud computing.
+
+**Rahul:** Exactly. We don't want deployment issues distracting us from the core functionality.
+
+**Meera:** What about authentication?
+
+**Rahul:** That's not part of the Day 2 prototype. We'll add it when the basic application works.
+
+**Arjun:** I'll keep the backend structure flexible enough to add it later.
+
+**Rahul:** Perfect.
+
+---
+
+# Day 2 Summary
+
+**Rahul:** So, final summary.
+
+Today we confirmed that the initial architecture will have separate frontend, backend, and ML components. We also decided to use asynchronous processing because ML processing may take time.
+
+The frontend will show the upload, processing, and result stages. The backend will create a job ID and track its status. The ML component will process the job separately.
+
+Karthik will continue with dataset analysis and preprocessing. Ananya will improve the ML prototype and define input-quality checks. Arjun will work on the asynchronous API. Meera will integrate the frontend with the backend.
+
+By the end of today, our goal is to have a basic end-to-end prototype running locally.
+
+**Ananya:** Sounds good.
+
+**Arjun:** Yep.
+
+**Meera:** I'll start the frontend integration after this.
+
+**Karthik:** I'll finish the preprocessing report.
+
+**Rahul:** Great. Let's meet again tomorrow and see if we can get the complete flow working.
+
+**[11:10 AM — Meeting Ended]**
+
+---
+
+## Day 2 Action Items
+
+| Member      | Day 2 Task                  | Expected Output                   |
+| ----------- | --------------------------- | --------------------------------- |
+| **Rahul**   | Architecture & coordination | Updated architecture + task board |
+| **Ananya**  | ML experimentation          | Working initial ML pipeline       |
+| **Arjun**   | Async backend               | Upload + job-status APIs          |
+| **Meera**   | Frontend integration        | Upload + processing UI            |
+| **Karthik** | Data preprocessing          | Cleaned/standardized dataset      |
+
+### Day 2 Main Goal
+
+**Create the first end-to-end working prototype:**
+
+**Upload → Backend → Processing Job → ML Pipeline → Result → Frontend**

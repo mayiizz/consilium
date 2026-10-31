@@ -1,0 +1,1 @@
+"""Consilium backend application package."""
